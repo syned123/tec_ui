@@ -1,13 +1,397 @@
-body {
+@import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree&family=Inter:wght@300&family=Kanit&display=swap");
+html,
+body,
+#root,
+.app,
+.content {
+  height: 100%;
+  width: 100%;
+  font-family: "Source Sans Pro", sans-serif;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
+*::-webkit-scrollbar {
+  -webkit-appearance: none;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*::-webkit-scrollbar:vertical {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-button:increment,
+*::-webkit-scrollbar-button {
+  display: none;
+}
+
+*::-webkit-scrollbar:horizontal {
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #929292;
+  border-radius: 20px;
+  border: 2px solid #f1f2f3;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+.app {
+  display: flex;
+  position: relative;
+  height: 100%;
+}
+.btn-toggle {
+  cursor: pointer;
+  display: none;
+}
+.sidebar-btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar-btn {
+  padding: 1px 15px;
+  border-radius: 40px;
+  color: #ff0000;
+  text-decoration: none;
+  margin: 0 auto;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.sidebar-btn span {
+  margin-left: 5px;
+  font-size: 13px;
+}
+.sidebar-btn:hover {
+  color: #d8d8d8;
+}
+.collapsed .sidebar-btn {
+  display: inline-block;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  line-height: 40px;
+  padding: 0;
+}
+.main {
+  padding: 24px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+header {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #efefef;
+}
+.block {
+  display: flex;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #545454;
+}
+.block span {
+  margin-left: 10px;
+}
+.contenedorPrincipal {
+  background-image: url(../public/technology_digital_art-142340.jpg);
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+}
+.contenedorPadre {
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+.contenedorHijo {
+  display: flex;
+  align-self: center;
+  height: 70vh;
+  width: 70vw;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 5px solid rgb(255, 255, 255);
+}
+.contenedorIzquierda {
+  background-image: url(../public/backg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 50vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.condivtitle {
+  display: flex;
+  flex-direction: column;
+}
+.titleTec {
+  color: #fff;
+  font-family: "Kanit", sans-serif;
+  text-shadow: rgb(0, 0, 0) 0.1em 0.1em 0.2em;
+  font-size: 2rem;
+}
+.titleTecGe {
+  font-family: "Bai Jamjuree", sans-serif;
+  color: #fff;
+  font-size: 1rem;
+  padding-left: 1.8rem;
+  text-shadow: rgb(0, 0, 0) 0.1em 0.1em 0.2em;
+}
+.contenedorDerecha {
+  background-color: #fff;
+  width: 50vw;
+}
+.login-form {
+  padding: 5rem;
+}
+.login-form-title {
+  font-family: "poppins", sans-serif;
+  font-style: oblique;
+  font-size: 24px;
+  color: #333333;
+  line-height: 1.2;
+  text-align: center;
+  font-weight: 700;
+  width: 100%;
+  display: block;
+  padding-bottom: 54px;
+}
+.wrap-input {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  margin-bottom: 10px;
+}
+.input {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #666;
+  outline: none;
+  border: none;
+  display: block;
+  width: 100%;
+  background: #e6e6e6;
+  height: 3rem;
+  border-radius: 1rem;
+  padding-left: 2.5rem;
+  box-sizing: border-box;
+}
+.focus-input {
+  display: block;
+  position: absolute;
+  border-radius: 25px;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px 0px 0px 0px;
+  color: rgba(7, 25, 4, 0.8);
+}
+.input:focus + .focus-input {
+  animation: anim-shadow 0.5s ease-in-out forwards;
+}
+@-webkit-keyframes anim-shadow {
+  to {
+    box-shadow: 0px 0px 70px 25px;
+    opacity: 0;
+  }
+}
+@keyframes anim-shadow {
+  to {
+    box-shadow: 0px 0px 70px 25px;
+    opacity: 0;
+  }
+}
+.symbol-input {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  border-radius: 25px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-left: 1rem;
+  pointer-events: none;
+  color: #008924;
+  transition: all 0.4s;
+}
+.input:focus + .focus-input + .symbol-input {
+  color: rgba(0, 17, 2, 0.71);
+  padding-left: 10px;
+}
+.login-form-btn-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 20px;
+}
+.login-form-btn {
+  font-family: "poppins", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #fff;
+  background: #000000;
+  text-transform: uppercase;
+  width: 100%;
+  height: 50px;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 25px;
+  transition: all 0.4s;
+  border: none;
+}
+.login-form-btn:hover {
+  background: #002707e3;
+}
+
+.sidebar {
+  display: flex;
+  justify-content: space-between;
+}
+.title {
+  color: #f8f9fa;
+  top: 50%;
+  padding: "9px";
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 15px;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  margin-left: 1.5rem;
+}
+.user {
+  padding: 0.75rem 1.5rem;
+}
+.userCont {
+  display: flex;
+}
+.imgCont {
+  flex-shrink: 0;
+}
+.img {
+  height: 50px;
+  width: 50px;
+  margin-right: 0.25rem;
+  border-radius: 0.2rem;
+}
+.ps-2 {
+  padding-left: 0.5rem;
+  flex-grow: 1;
+}
+.namerol {
+  color: #e9ecef;
+}
+.rols {
+  color: #adb5bd;
+}
+
+/* Pages */
+.contegrip {
+  margin: 1rem;
+}
+.conthead {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem;
+}
+
+/* modal*/
+.contForm {
+  /* background-color: red; */
+}
+.contText {
+  padding: 0.5rem 0 0.5rem 0;
+}
+.contButton {
+  display: flex;
+  justify-content: flex-end;
+}
+.contgri {
+  padding: 1rem;
+}
+.contDivTex {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.texFiel {
+  width: 50%;
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+.conDivCom {
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.content-div {
+}
+.div-cont-button {
+  display: flex;
+  justify-content: flex-end;
+}
+.div-cont-textfield {
+  display: flex;
+  width: 100%;
+}
+.div-cont-left {
+  background-color: #19222c;
+  width: 50%;
+  padding: 1rem;
+  border: 1px solid #002a02;
+  height: 32rem;
+  overflow-y: scroll;
+}
+.div-cont-textField {
+  width: 100%;
+  display: flex;
+}
+.div-cont-textField-left {
+  width: 50%;
+  padding: 0.5rem 0.5rem 0 0;
+}
+.div-cont-textField-rigth {
+  width: 50%;
+  padding: 0.5rem 0.5rem 0 0;
+}
+.div-cont-rigth {
+  width: 50%;
+  background-color: #19222c;
+  padding: 1rem;
+  border: 1px solid #002a02;
+  height: 32rem;
+  overflow-y: scroll;
+}
+.div-cont-autoco {
+  width: 100%;
+  padding: 0.5rem 0.5rem 0 0;
+}
+.div-cont-texField-left {
+  width: 50%;
+  padding: 0.5rem 0.5rem 0 0;
+}
+@media all and (min-width: 480px) and (max-width: 768px) {
+  .btn-toggle {
+    display: flex;
+    background-color: #141b2d;
+  }
+  .contenedorIzquierda {
+    width: 0;
+  }
+  .contenedorDerecha {
+    width: 100vw;
+  }
 }
