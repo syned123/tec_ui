@@ -33,8 +33,8 @@ export const useTicketStore = () => {
   };
   const startLoadingTicket = async () => {
     try {
-      const { data } = await tecApi.get("/ticket/getTicket");
-      console.log(data.ticket);
+      const { data } = await tecApi.get("/ticket");
+      console.log(data);
       var ticketUp = [];
       data.ticket.map((elem) => {
         ticketUp.push({
@@ -44,13 +44,16 @@ export const useTicketStore = () => {
           cnt: elem.cnt,
           code: elem.code,
           company: elem.company.name,
+          contactName: elem.contact.name,
+          contactLastname: elem.contact.lastname,
           entity: elem.entity,
+          type: elem.equipment.type,
           make: elem.equipment.make,
           model: elem.equipment.model,
           serie: elem.equipment.serie,
-
           status: elem.status,
           typeService: elem.typeService,
+          details: elem.details,
         });
       });
       dispatch(onLoadTicket(ticketUp));

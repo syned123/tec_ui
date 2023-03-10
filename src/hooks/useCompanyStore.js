@@ -11,7 +11,7 @@ import {
 export const useCompanyStore = () => {
   const dispatch = useDispatch();
   const { rows, activeRows } = useSelector((state) => state.company);
-  console.log(rows, activeRows);
+
   const setActiveRow = (companyRow) => {
     dispatch(onSetActiveRows(companyRow));
   };

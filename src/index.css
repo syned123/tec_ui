@@ -1,4 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree&family=Inter:wght@300&family=Kanit&display=swap");
+@font-face {
+  font-family: "Gotic";
+  src: url("../public/Fuentes/GOTHICBI.TTF");
+}
+@font-face {
+  font-family: "GoticN";
+  src: url("../public/Fuentes/GOTHICI.TTF");
+}
 html,
 body,
 #root,
@@ -268,11 +276,12 @@ header {
   top: 50%;
   padding: "9px";
   text-transform: uppercase;
-  font-weight: bold;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 1.15rem;
   letter-spacing: 1px;
-  margin-top: 10px;
+  font-family: "Inter";
   margin-left: 1.5rem;
+  font-weight: bold;
 }
 .user {
   padding: 0.75rem 1.5rem;
@@ -284,8 +293,8 @@ header {
   flex-shrink: 0;
 }
 .img {
-  height: 50px;
-  width: 50px;
+  height: 45px;
+  width: 45px;
   margin-right: 0.25rem;
   border-radius: 0.2rem;
 }
@@ -295,9 +304,14 @@ header {
 }
 .namerol {
   color: #e9ecef;
+  font-size: 0.875rem;
+  font-family: "Inter";
+  white-space: nowrap;
+  font-weight: bold;
 }
 .rols {
   color: #adb5bd;
+  font-size: 0.875rem;
 }
 
 /* Pages */
@@ -307,9 +321,72 @@ header {
 .conthead {
   display: flex;
   justify-content: space-between;
-  margin: 1rem;
 }
-
+.conthead-a {
+  display: flex;
+  width: 100%;
+}
+.conthead-a-a {
+  width: 50%;
+  padding: 1rem;
+}
+.conthead-a-b {
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 0 0.875rem 0 rgb(33 37 41 / 5%);
+  width: 50%;
+}
+.conta-a {
+  display: flex;
+}
+.conta-a-a {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(255, 255, 255);
+  border-radius: 0.25rem;
+  border: 0 solid transparent;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+}
+.title-s {
+  color: rgb(147, 155, 162);
+  font-size: 0.925rem;
+  font-weight: 600;
+  font-family: "Inter";
+}
+.title-n {
+  color: rgb(0, 0, 0);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  margin-top: 0px;
+}
+.conta-a-b {
+  width: 50%;
+  padding: 1rem;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 0 0.875rem 0 rgb(33 37 41 / 5%);
+  border-radius: 0.25rem;
+  border: 0 solid transparent;
+  margin-bottom: 0.5rem;
+  margin-left: 0.5rem;
+}
+.conta-a-c {
+  width: 50%;
+  padding: 1rem;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 0 0.875rem 0 rgb(33 37 41 / 5%);
+  border-radius: 0.25rem;
+  border: 0 solid transparent;
+}
+.conta-a-d {
+  width: 50%;
+  padding: 1rem;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 0 0.875rem 0 rgb(33 37 41 / 5%);
+  border: 0 solid transparent;
+  margin-left: 0.5rem;
+}
 /* modal*/
 .contForm {
   /* background-color: red; */
@@ -336,57 +413,110 @@ header {
 .conDivCom {
   padding: 0.5rem 0.5rem 0.5rem 0;
 }
-
-.content-div {
+.div-form {
+  padding: 1rem;
 }
-.div-cont-button {
-  display: flex;
-  justify-content: flex-end;
+.div-cont-form {
+  width: 100%;
 }
-.div-cont-textfield {
+.div-cont {
   display: flex;
   width: 100%;
 }
 .div-cont-left {
-  background-color: #19222c;
   width: 50%;
-  padding: 1rem;
-  border: 1px solid #002a02;
-  height: 32rem;
+  background-color: #222e3c;
   overflow-y: scroll;
-}
-.div-cont-textField {
-  width: 100%;
-  display: flex;
-}
-.div-cont-textField-left {
-  width: 50%;
-  padding: 0.5rem 0.5rem 0 0;
-}
-.div-cont-textField-rigth {
-  width: 50%;
-  padding: 0.5rem 0.5rem 0 0;
+  height: 33rem;
 }
 .div-cont-rigth {
   width: 50%;
-  background-color: #19222c;
-  padding: 1rem;
-  border: 1px solid #002a02;
-  height: 32rem;
+  margin-left: 0.8rem;
+  background-color: #222e3c;
   overflow-y: scroll;
+  height: 33rem;
 }
-.div-cont-autoco {
+.div-cont-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+.div-cont-sub {
+  padding: 0.5rem;
+}
+.div-cont-textField {
+  padding: 0.5rem;
+  display: flex;
   width: 100%;
-  padding: 0.5rem 0.5rem 0 0;
 }
-.div-cont-texField-left {
+.div-cont-textField-left {
+  padding: 0.2rem;
   width: 50%;
-  padding: 0.5rem 0.5rem 0 0;
 }
-@media all and (min-width: 480px) and (max-width: 768px) {
+.div-cont-textField-right {
+  padding: 0.2rem;
+  width: 50%;
+}
+.div-cont-equip {
+  padding: 0.8rem;
+}
+
+.div-list {
+  padding: 0.8rem;
+}
+.title-table {
+  font-family: "Inter";
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.lis-cont {
+}
+.title-co {
+  font-family: "GoticN";
+  font-size: 1rem;
+  padding-bottom: 0.2rem;
+  font-weight: bold;
+}
+.template-detail-label {
+  font-family: "Inter";
+  font-size: 0.8rem;
+}
+.div-check {
+  display: flex;
+}
+.check-number {
+  padding-top: 0.3rem;
+  width: 1.3rem;
+  font-family: "Inter";
+  font-size: 0.8rem;
+}
+.check-title {
+  padding-top: 0.3rem;
+  padding-left: 0.5rem;
+  font-family: "GoticN";
+}
+.text-Info {
+  font-family: "GoticN";
+  padding-left: 0.5rem;
+  font-weight: bold;
+}
+@media all and (min-width: 320px) and (max-width: 768px) {
   .btn-toggle {
     display: flex;
     background-color: #141b2d;
+  }
+  .div-cont {
+    flex-direction: column;
+  }
+  .div-cont-left {
+    width: 100%;
+  }
+  .div-cont-rigth {
+    margin-top: 1rem;
+    margin-left: 0;
+    width: 100%;
   }
   .contenedorIzquierda {
     width: 0;

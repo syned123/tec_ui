@@ -1,3 +1,4 @@
+import { Alert } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import tecApi from "../api/tecApi";
 import {
@@ -15,10 +16,24 @@ export const useAuthStore = () => {
     dispatch(onChecking());
     try {
       const { data } = await tecApi.post("/auth", { email, password });
+      // console.log({ data });
       localStorage.setItem("token", data.token);
-      dispatch(onLogin({ name: data.name, uid: data.uid }));
+      dispatch(
+        onLogin({
+          name: data.name,
+          lastname: data.lastname,
+          id: data.id,
+          rol: data.rol,
+        })
+      );
     } catch (error) {
-      dispatch(onLogout("credenciales incorrectas"));
+      // console.log(error.response.data.msg);
+
+      dispatch(
+        onLogout({
+          msg: error.response.data.msg,
+        })
+      );
       setTimeout(() => {
         dispatch(clearErrorMessage());
       }, 10);
@@ -30,9 +45,16 @@ export const useAuthStore = () => {
     if (!token) return dispatch(onLogout());
     try {
       const { data } = await tecApi.get("/auth/renew");
-      // console.log({ data });
+
       localStorage.setItem("token", data.token);
-      dispatch(onLogin({ name: data.name, uid: data.uid }));
+      dispatch(
+        onLogin({
+          name: data.name,
+          lastname: data.lastname,
+          id: data.id,
+          rol: data.rol,
+        })
+      );
     } catch (error) {
       localStorage.clear();
       dispatch(onLogout());

@@ -7,88 +7,287 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useAgencyStore } from "../../../hooks/useAgencyStore";
-import { useCompanyStore } from "../../../hooks/useCompanyStore";
-import { useContactStore } from "../../../hooks/useContactStore";
-import { useEquipStore } from "../../../hooks/useEquimentStore";
-import { useTicketStore } from "../../../hooks/useTicketStore";
-
-export const TemplateFormBoleta = () => {
-  const top100Films = [{ label: "La Paz", year: 1994 }];
-  const { rows } = useCompanyStore();
-  const { rowsAgency } = useAgencyStore();
-  const { rowsContact } = useContactStore();
-  const { rowsEquipment } = useEquipStore();
-  const { activeRows, startSavingRow } = useTicketStore();
-  const [formValues, setFormValues] = useState({
-    company: "",
-    agency: "",
-    contact: "",
-    city: "",
-    equipment: "",
-    cnt: "",
-    typeService: "",
-    entity: "",
-    code: "",
-    status: "",
-  });
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    console.log(formValues);
-    await startSavingRow(formValues);
-  };
-  const onInputChanged = ({ target }) => {
-    setFormValues({
-      ...formValues,
-      [target.name]: target.value,
+import axios from "axios";
+import React, { Component } from "react";
+import ReportSections from "./report/ReportSections";
+export default class TemplateFormBoleta extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      model: {
+        company: "",
+        agency: "",
+        city: "",
+        contact: "",
+        equipment: "",
+        cnt: "",
+        typeService: "",
+        entity: "",
+        code: 0,
+        status: "",
+      },
+      companies: [],
+      agencies: [],
+      cities: [],
+      contacts: [],
+      equipments: [],
+      codeCompany: [],
+      ticket: [],
+      template: null,
+      values: {},
+    };
+    this.onChangeModel = this.onChangeModel.bind(this);
+    this.onClickSaveButton = this.onClickSaveButton.bind(this);
+    this.handleInputsChanges = this.handleInputsChanges.bind(this);
+  }
+  onChangeModel(value, key) {
+    var response = this.state.model;
+    response[key] = value;
+    console.log(response);
+    // console.log("valorrrrr", value);
+    // console.log("key", key);
+    this.setState({ model: response });
+  }
+  handleInputsChanges(key, value) {
+    var response = this.state.values;
+    response[key] = value;
+    // console.log("Inputs", response);
+    this.setState({
+      values: response,
+    });
+  }
+  getCompanies = () => {
+    axios({
+      url: "http://localhost:4000/api/company/getCompany",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      // console.log(response);
+      this.companiesMap = {};
+      response.data.company &&
+        response.data.company.map(
+          (company) => (this.companiesMap[company.id] = company)
+        );
+      this.setState({
+        companies: response.data.company,
+      });
     });
   };
-  useEffect(() => {
-    if (activeRows !== null) {
-      setFormValues({ ...activeRows });
-    }
-  }, [activeRows]);
-  var rowsMap = {};
-  rows.map((elem) => {
-    rowsMap[elem.id] = elem;
-  });
-  var rowsEquipmentMap = {};
-  rowsEquipment.map((elem) => {
-    rowsEquipmentMap[elem.id] = elem;
-  });
+  getAgencies = () => {
+    axios({
+      url: "http://localhost:4000/api/agency/getAgency",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      this.agencyMap = {};
+      response.data.agencyList.map(
+        (agency) => (this.agencyMap[agency.id] = agency)
+      );
+      var listCity = [];
+      for (var i = 0; i < response.data.agencyList.length; i++) {
+        if (listCity.indexOf(response.data.agencyList[i].city) === -1) {
+          listCity.push(response.data.agencyList[i].city);
+        }
+      }
+      this.setState({
+        cities: listCity,
+        agencies: response.data.agencyList,
+      });
+    });
+  };
+  getContact = () => {
+    axios({
+      url: "http://localhost:4000/api/contact/getContact",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      this.contactMap = {};
+      response.data.contactList.map(
+        (contact) => (this.contactMap[contact.id] = contact)
+      );
 
-  // console.log(rowsEquipmentMap);
-  return (
-    <div className="contegrip">
-      <form onSubmit={onSubmit}>
-        <div className="content-div">
-          <div className="div-cont-button">
-            <Button variant="contained" size="small" type="">
+      this.setState({
+        contacts: response.data.contactList,
+      });
+    });
+  };
+  getEquipment = () => {
+    axios({
+      url: "http://localhost:4000/api/equipment/getEquipment",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      this.equipmentMap = {};
+      response.data.equipment.map(
+        (equipment) => (this.equipmentMap[equipment.id] = equipment)
+      );
+      // console.log(this.equipmentMap);
+      this.setState({
+        equipments: response.data.equipment,
+      });
+    });
+  };
+  getTicket = () => {
+    axios({
+      url: "http://localhost:4000/api/ticket",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      console.log(response.data.ticket);
+    });
+  };
+  onClickSaveButton() {
+    var detailsList = [];
+    const keys = Object.keys(this.state.values);
+    // console.log(keys);
+    for (var i = 0; i < keys.length; i++) {
+      detailsList.push({
+        templateDetail: keys[i],
+        value: this.state.values[keys[i]],
+      });
+    }
+    var url = "http://localhost:4000/api/ticket";
+    if (this.editMode) {
+      url = url + "/" + this.ticketId;
+    }
+
+    axios({
+      url: url,
+      method: this.editMode ? "PUT" : "POST",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+      data: {
+        company: this.state.model.company,
+        agency: this.state.model.agency,
+        city: this.state.model.city,
+        contact: this.state.model.contact,
+        cnt: this.state.model.cnt,
+        equipment: this.state.model.equipment,
+        typeService: this.state.model.typeService,
+        entity: this.state.model.entity,
+        code: this.state.model.code,
+        status: this.state.model.status,
+        template: "TEMPLATE_SERVICIO_MANTENIMIENTO",
+        details: detailsList,
+      },
+    }).then((response) => {
+      console.log(response.data);
+    });
+  }
+  componentDidMount() {
+    this.getCompanies();
+    this.getAgencies();
+    this.getContact();
+    this.getEquipment();
+    this.getTicket();
+    axios({
+      url: "http://localhost:4000/api/template/bycode/TEMPLATE_SERVICIO_MANTENIMIENTO",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      this.setState({
+        template: response.data,
+      });
+    });
+    if (window.location.pathname.split("/")[3]) {
+      this.ticketId = window.location.pathname.split("/")[3];
+      axios({
+        url: "http://localhost:4000/api/ticket/" + this.ticketId,
+        method: "GET",
+        headers: {
+          "x-token": localStorage.getItem("token"),
+        },
+      }).then((response) => {
+        console.log(response.data.ticket);
+        var detailsMap = {};
+        response.data.ticket.details.map(
+          (detail) => (detailsMap[detail.templateDetail] = detail.value)
+        );
+        this.setState({
+          values: detailsMap,
+          model: {
+            company: response.data.ticket.company,
+            agency: response.data.ticket.agency,
+            city: response.data.ticket.city,
+            contact: response.data.ticket.contact,
+            equipment: response.data.ticket.equipment,
+            cnt: response.data.ticket.cnt,
+            typeService: response.data.ticket.typeService,
+            entity: response.data.ticket.entity,
+            code: response.data.ticket.code,
+            status: response.data.ticket.status,
+          },
+        });
+      });
+    }
+  }
+
+  render() {
+    var listSection = [];
+    if (this.state.template) {
+      for (var i = 0; i < this.state.template.sections.length; i++) {
+        listSection.push(
+          <ReportSections
+            sectionData={this.state.template.sections[i]}
+            onChangeValues={this.handleInputsChanges}
+            values={this.state.values}
+          />
+        );
+      }
+    }
+
+    return (
+      <div className="div-form">
+        <div className="div-cont-form">
+          <div>
+            <Button
+              onClick={this.onClickSaveButton}
+              sx={{
+                color: "#fff",
+                backgroundColor: "#007c15",
+                paddingBottom: "5px",
+              }}
+            >
               Guardar
             </Button>
           </div>
-          <div className="div-cont-textfield">
+          <div className="div-cont">
             <div className="div-cont-left">
-              <div>
+              <div className="div-cont-top">
                 <div>
-                  <span>Informacion</span>
+                  <span className="text-Info">Informacion</span>
                 </div>
-                <div>
-                  <span>Informacion De La Entidad Financiera</span>
-                </div>
+              </div>
+              <div className="div-cont-sub">
+                <span className="text-Info">
+                  Informacion de la entidad financiera
+                </span>
               </div>
               <div className="div-cont-textField">
                 <div className="div-cont-textField-left">
                   <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
                     value={
-                      formValues.company && rowsMap
-                        ? rowsMap[formValues.company].name
+                      this.state.model.company && this.companiesMap
+                        ? this.companiesMap[this.state.model.company].name
                         : ""
                     }
-                    options={rows}
+                    options={this.state.companies}
+                    isOptionEqualToValue={(option, value) =>
+                      option.company === value.company
+                    }
                     getOptionLabel={(option) => {
                       if (typeof option === "string") {
                         return option;
@@ -99,67 +298,31 @@ export const TemplateFormBoleta = () => {
                       return option.name;
                     }}
                     onChange={(event, newValue) => {
-                      setFormValues({
-                        ...formValues,
-                        company: newValue.id,
-                      });
-                    }}
-                    fullWidth
-                    renderInput={(params) => (
-                      <TextField {...params} label="Entidad Financiera" />
-                    )}
-                  />
-                </div>
-                <div className="div-cont-textField-rigth">
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    fullWidth
-                    options={rowsContact}
-                    getOptionLabel={(option) => {
-                      if (typeof option === "string") {
-                        return option;
+                      if (newValue === null) {
+                        return newValue;
                       }
-                      if (option.inputValue) {
-                        return option.inputValue;
-                      }
-                      return option.name;
+                      return this.onChangeModel(newValue.id, "company");
                     }}
-                    onChange={(event, newValue) => {
-                      setFormValues({
-                        ...formValues,
-                        contact: newValue.id,
-                      });
-                    }}
+                    renderOption={(props, option) => (
+                      <li {...props}>{option.name}</li>
+                    )}
                     renderInput={(params) => (
-                      <TextField {...params} label="Contacto" />
+                      <TextField
+                        {...params}
+                        label="Entidad Financiera"
+                        color="success"
+                      />
                     )}
                   />
                 </div>
-              </div>
-              <div className="div-cont-textField">
-                <div className="div-cont-textField-left">
+                <div className="div-cont-textField-right">
                   <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={top100Films}
-                    onChange={(event, newValue) => {
-                      setFormValues({
-                        ...formValues,
-                        city: newValue.label,
-                      });
-                    }}
-                    fullWidth
-                    renderInput={(params) => (
-                      <TextField {...params} label="Ciudad" />
-                    )}
-                  />
-                </div>
-                <div className="div-cont-textField-rigth">
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={rowsAgency}
+                    value={
+                      this.state.model.agency && this.agencyMap
+                        ? this.agencyMap[this.state.model.agency].nameAgency
+                        : ""
+                    }
+                    options={this.state.agencies}
                     getOptionLabel={(option) => {
                       if (typeof option === "string") {
                         return option;
@@ -170,32 +333,55 @@ export const TemplateFormBoleta = () => {
                       return option.nameAgency;
                     }}
                     onChange={(event, newValue) => {
-                      setFormValues({
-                        ...formValues,
-                        agency: newValue.id,
-                      });
+                      // if (newValue === null) {
+                      //   return newValue;
+                      // }
+                      // if (typeof newValue === "string") {
+                      //   setTimeout(() => {
+                      //     this.handleClickModal(true, "modalHandleDevice");
+                      //   });
+                      // } else if (newValue && newValue.inputValue) {
+                      //   this.handleClickModal(true, "modalHandleDevice");
+                      // }
+                      return this.onChangeModel(newValue.id, "agency");
                     }}
-                    fullWidth
                     renderInput={(params) => (
-                      <TextField {...params} label="Agencia" />
+                      <TextField {...params} label="Agencia" color="success" />
                     )}
                   />
                 </div>
               </div>
-              <div>
-                <span>Informacion De Equipo</span>
-              </div>
               <div className="div-cont-textField">
-                <div className="div-cont-autoco">
+                <div className="div-cont-textField-left">
                   <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
+                    value={this.state.model.city}
+                    options={this.state.cities}
+                    onChange={(event, newValue) => {
+                      // if (newValue === null) {
+                      //   return newValue;
+                      // }
+                      // if (typeof newValue === "string") {
+                      //   setTimeout(() => {
+                      //     this.handleClickModal(true, "modalHandleDevice");
+                      //   });
+                      // } else if (newValue && newValue.inputValue) {
+                      //   this.handleClickModal(true, "modalHandleDevice");
+                      // }
+                      return this.onChangeModel(newValue, "city");
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Ciudad" color="success" />
+                    )}
+                  />
+                </div>
+                <div className="div-cont-textField-right">
+                  <Autocomplete
                     value={
-                      formValues.equipment && rowsEquipmentMap
-                        ? rowsEquipmentMap[formValues.equipment].serie
+                      this.state.model.contact && this.contactMap
+                        ? this.contactMap[this.state.model.contact].name
                         : ""
                     }
-                    options={rowsEquipment}
+                    options={this.state.contacts}
                     getOptionLabel={(option) => {
                       if (typeof option === "string") {
                         return option;
@@ -203,92 +389,164 @@ export const TemplateFormBoleta = () => {
                       if (option.inputValue) {
                         return option.inputValue;
                       }
-                      return option.serie;
+                      return option.name;
                     }}
                     onChange={(event, newValue) => {
-                      setFormValues({
-                        ...formValues,
-                        equipment: newValue.id,
-                      });
+                      // if (newValue === null) {
+                      //   return newValue;
+                      // }
+                      // if (typeof newValue === "string") {
+                      //   setTimeout(() => {
+                      //     this.handleClickModal(true, "modalHandleDevice");
+                      //   });
+                      // } else if (newValue && newValue.inputValue) {
+                      //   this.handleClickModal(true, "modalHandleDevice");
+                      // }
+                      return this.onChangeModel(newValue.id, "contact");
                     }}
-                    fullWidth
                     renderInput={(params) => (
-                      <TextField {...params} label="Serie Equipo" />
+                      <TextField {...params} label="Contaco" color="success" />
                     )}
                   />
                 </div>
               </div>
+              <div className="div-cont-sub">
+                <span className="text-Info">Informacion De Equipo</span>
+              </div>
+              <div className="div-cont-equip">
+                <Autocomplete
+                  value={
+                    this.state.model.equipment && this.equipmentMap
+                      ? this.equipmentMap[this.state.model.equipment].serie
+                      : ""
+                  }
+                  options={this.state.equipments}
+                  isOptionEqualToValue={(option, value) =>
+                    option.serie === value.serie
+                  }
+                  getOptionLabel={(option) => {
+                    if (typeof option === "string") {
+                      return option;
+                    }
+                    if (option.inputValue) {
+                      return option.inputValue;
+                    }
+                    return option.serie;
+                  }}
+                  onChange={(event, newValue) => {
+                    // if (newValue === null) {
+                    //   return newValue;
+                    // }
+                    // if (typeof newValue === "string") {
+                    //   setTimeout(() => {
+                    //     this.handleClickModal(true, "modalHandleDevice");
+                    //   });
+                    // } else if (newValue && newValue.inputValue) {
+                    //   this.handleClickModal(true, "modalHandleDevice");
+                    // }
+                    return this.onChangeModel(newValue.id, "equipment");
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Entidad Financiera"
+                      color="success"
+                    />
+                  )}
+                />
+              </div>
               <div className="div-cont-textField">
-                <div className="div-cont-texField-left">
+                <div className="div-cont-textField-left">
                   <TextField
+                    id="outlined-basic"
+                    color="success"
+                    label="Tipo"
+                    variant="outlined"
+                    fullWidth
                     value={
-                      formValues.equipment && rowsEquipmentMap
-                        ? rowsEquipmentMap[formValues.equipment].type
+                      this.state.model.equipment && this.equipmentMap
+                        ? this.equipmentMap[this.state.model.equipment].type
                         : ""
                     }
-                    label="tipo"
+                    readOnly
                   />
                 </div>
-                <div className="div-cont-texField-left">
+                <div className="div-cont-textField-right">
                   <TextField
+                    color="success"
+                    label="Marca"
                     value={
-                      formValues.equipment && rowsEquipmentMap
-                        ? rowsEquipmentMap[formValues.equipment].make
+                      this.state.model.equipment && this.equipmentMap
+                        ? this.equipmentMap[this.state.model.equipment].make
                         : ""
                     }
-                    label="Marca"
                   />
                 </div>
               </div>
               <div className="div-cont-textField">
-                <div className="div-cont-texField-left">
+                <div className="div-cont-textField-left">
                   <TextField
+                    color="success"
+                    id="outlined-basic"
+                    label="Modelo"
+                    variant="outlined"
+                    fullWidth
                     value={
-                      formValues.equipment && rowsEquipmentMap
-                        ? rowsEquipmentMap[formValues.equipment].model
+                      this.state.model.equipment && this.equipmentMap
+                        ? this.equipmentMap[this.state.model.equipment].model
                         : ""
                     }
-                    label="Modelo"
+                    readOnly
                   />
                 </div>
-                <div className="div-cont-texField-left">
+                <div className="div-cont-textField-right">
                   <TextField
-                    value={formValues.cnt}
                     label="CNT"
-                    onChange={onInputChanged}
-                    name="cnt"
+                    color="success"
+                    variant="outlined"
+                    fullWidth
+                    type="Number"
+                    value={this.state.model.cnt}
+                    onChange={(event) => {
+                      return this.onChangeModel(event.target.value, "cnt");
+                    }}
                   />
                 </div>
               </div>
             </div>
             <div className="div-cont-rigth">
-              <div className="div-cont-span">
-                <span className="div-span">Informacion De Mantenimiento</span>
+              <div className="div-cont-top">
+                <div className="div-cont-span">
+                  <span className="text-Info">
+                    Informacion de mantenimiento
+                  </span>
+                </div>
               </div>
               <div className="div-cont-textField">
                 <div className="div-cont-textField-left">
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">
-                      Tipo De Servicio
+                      Tipo de servicio
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      // value={age}
-                      label="Age"
+                      value={this.state.model.typeService}
+                      color="success"
+                      label="Tipo de servicio"
                       onChange={(event) => {
-                        setFormValues({
-                          ...formValues,
-                          typeService: event.target.value,
-                        });
+                        return this.onChangeModel(
+                          event.target.value,
+                          "typeService"
+                        );
                       }}
                     >
-                      <MenuItem value={"Correctivo"}>Correctivo</MenuItem>
-                      <MenuItem value={"Preventivo"}>Preventivo</MenuItem>
+                      <MenuItem value="Correctivo">Correctivo</MenuItem>
+                      <MenuItem value="Preventivo">Preventivo</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
-                <div className="div-cont-textField-rigth">
+                <div className="div-cont-textField-right">
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">
                       Entidad
@@ -296,18 +554,16 @@ export const TemplateFormBoleta = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      // value={age}
-                      label="Age"
+                      value={this.state.model.entity}
+                      label="Entidad"
+                      color="success"
                       onChange={(event) => {
-                        setFormValues({
-                          ...formValues,
-                          entity: event.target.value,
-                        });
+                        return this.onChangeModel(event.target.value, "entity");
                       }}
                     >
                       <MenuItem value={"DMC"}>DMC</MenuItem>
-                      <MenuItem value={"TECNOGENIA"}>TECNOGENIA</MenuItem>
-                      <MenuItem value={"OTROS"}>OTROS</MenuItem>
+                      <MenuItem value={"Tecnogenia"}>Tecnogenia</MenuItem>
+                      <MenuItem value={"Otros"}>Otros</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
@@ -315,15 +571,28 @@ export const TemplateFormBoleta = () => {
               <div className="div-cont-textField">
                 <div className="div-cont-textField-left">
                   <TextField
-                    id="outlined-basic"
                     label="Codigo"
                     variant="outlined"
-                    name="code"
-                    value={formValues.code}
-                    onChange={onInputChanged}
+                    fullWidth
+                    color="success"
+                    value={
+                      this.state.model.code ||
+                      (this.state.model.company && this.companiesMap
+                        ? this.companiesMap[this.state.model.company].code
+                        : "") +
+                        "-" +
+                        this.state.model.city +
+                        "-"
+                    }
+                    onChange={(event) => {
+                      return this.onChangeModel(
+                        event.target.value.toUpperCase(),
+                        "code"
+                      );
+                    }}
                   />
                 </div>
-                <div className="div-cont-textField-rigth">
+                <div className="div-cont-textField-right">
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">
                       Estado
@@ -331,25 +600,25 @@ export const TemplateFormBoleta = () => {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      // value={age}
-                      label="Age"
+                      color="success"
+                      value={this.state.model.status}
+                      label="Estado"
                       onChange={(event) => {
-                        setFormValues({
-                          ...formValues,
-                          status: event.target.value,
-                        });
+                        return this.onChangeModel(event.target.value, "status");
                       }}
                     >
                       <MenuItem value={"Concluido"}>Concluido</MenuItem>
                       <MenuItem value={"Pendiente"}>Pendiente</MenuItem>
+                      <MenuItem value={"Reincidencia"}>Reincidencia</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
               </div>
+              <div className="div-list">{listSection}</div>
             </div>
           </div>
         </div>
-      </form>
-    </div>
-  );
-};
+      </div>
+    );
+  }
+}

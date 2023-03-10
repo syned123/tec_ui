@@ -12,6 +12,7 @@ export const AddNewUser = () => {
       lastname: "",
       email: "",
       password: "",
+      rol: "",
     });
     openTecModal();
   };

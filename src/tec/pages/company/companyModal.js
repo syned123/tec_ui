@@ -52,7 +52,11 @@ export const CompanyModal = () => {
 
   return (
     <>
-      <IconButton onClick={openTecModal}>
+      <IconButton
+        onClick={openTecModal}
+        style={{ color: "#00ff2a" }}
+        size="small"
+      >
         <EditIcon />
       </IconButton>
       <Modal
@@ -108,7 +112,15 @@ export const CompanyModal = () => {
               </div>
             </div>
             <div className="contButton">
-              <Button variant="contained" color="success" type="">
+              <Button
+                variant="contained"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#007c15",
+                  paddingBottom: "5px",
+                }}
+                type=""
+              >
                 Guardar
               </Button>
             </div>

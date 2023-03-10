@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   IconButton,
@@ -10,6 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
 import { useUiStore } from "../../../hooks/useUiStore";
 import { useContactStore } from "../../../hooks/useContactStore";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -26,6 +28,7 @@ const style = {
 export const ContactModal = () => {
   const { activeRows, startSavingRow } = useContactStore();
   const { isTecModalOpen, openTecModal, closeTecModal } = useUiStore();
+  const [agency, setAgency] = useState(null);
   const [formValues, setFormValues] = useState({
     name: "",
     lastname: "",
@@ -33,7 +36,18 @@ export const ContactModal = () => {
     charge: "",
     company: "",
   });
-
+  const agencyData = () => {
+    axios({
+      url: "http://localhost:4000/api/company/getCompany",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      // console.log(response);
+      setAgency(response.data.company);
+    });
+  };
   const onInputChanged = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -47,6 +61,7 @@ export const ContactModal = () => {
     closeTecModal();
   };
   useEffect(() => {
+    agencyData();
     if (activeRows !== null) {
       setFormValues({ ...activeRows });
     }
@@ -54,7 +69,7 @@ export const ContactModal = () => {
 
   return (
     <>
-      <IconButton onClick={openTecModal}>
+      <IconButton onClick={openTecModal}  style={{ color: "#00ff2a" }}>
         <EditIcon />
       </IconButton>
       <Modal
@@ -69,7 +84,7 @@ export const ContactModal = () => {
           </Typography>
           <form onSubmit={onSubmit}>
             <div className="contForm">
-            <div className="contDivTex">
+              <div className="contDivTex">
                 <div className="texFiel">
                   <TextField
                     id="outlined-basic"
@@ -126,16 +141,34 @@ export const ContactModal = () => {
                 </div>
               </div>
               <div className="conDivCom">
-                <TextField
-                  id="outlined-basic"
-                  label="Entidad Financiera"
-                  variant="outlined"
-                  // size="small"
-                  color="success"
-                  fullWidth
-                  name="company"
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
                   value={formValues.company}
-                  onChange={onInputChanged}
+                  options={agency}
+                  getOptionLabel={(option) => {
+                    if (typeof option === "string") {
+                      return option;
+                    }
+                    if (option.inputValue) {
+                      return option.inputValue;
+                    }
+                    return option.name;
+                  }}
+                  onChange={(event, newValue) => {
+                    setFormValues({
+                      ...formValues,
+                      company: newValue.id,
+                    });
+                  }}
+                  fullWidth
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Entidad Financiera"
+                      color="success"
+                    />
+                  )}
                 />
               </div>
             </div>

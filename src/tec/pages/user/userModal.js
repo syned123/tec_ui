@@ -29,6 +29,7 @@ export const UserModal = () => {
     lastname: "",
     email: "",
     password: "",
+    rol: "",
   });
   const onInputChanged = ({ target }) => {
     setFormValues({
@@ -49,7 +50,7 @@ export const UserModal = () => {
   }, [activeRows]);
   return (
     <>
-      <IconButton onClick={openTecModal}>
+      <IconButton onClick={openTecModal} style={{ color: "#00ff2a" }}>
         <EditIcon />
       </IconButton>
       <Modal
@@ -120,9 +121,32 @@ export const UserModal = () => {
                   />
                 </div>
               </div>
+              <div className="contDivTex">
+                <div className="texFiel">
+                  <TextField
+                    id="outlined-basic"
+                    label="Rol"
+                    variant="outlined"
+                    // size="small"
+                    color="success"
+                    fullWidth
+                    name="rol"
+                    value={formValues.rol}
+                    onChange={onInputChanged}
+                  />
+                </div>
+              </div>
             </div>
             <div className="contButton">
-              <Button variant="contained" color="success" type="">
+              <Button
+                variant="contained"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#007c15",
+                  paddingBottom: "5px",
+                }}
+                type=""
+              >
                 Guardar
               </Button>
             </div>

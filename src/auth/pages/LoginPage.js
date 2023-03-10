@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
+import Swal from "sweetalert2";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import { useForm } from "../../hooks/useForm";
 const loginFormFields = {
@@ -18,8 +19,10 @@ export const LoginPage = () => {
     event.preventDefault();
     startLogin({ email: loginEmail, password: loginPassword });
   };
+
   useEffect(() => {
     if (errorMessage !== undefined) {
+      Swal.fire("Error en la autenticacion", errorMessage.msg, "error");
     }
   }, [errorMessage]);
 
@@ -44,6 +47,7 @@ export const LoginPage = () => {
                   value={loginEmail}
                   onChange={onLoginInputChange}
                   placeholder="Usuario"
+                  required
                 />
                 <span className="focus-input"></span>
                 <span className="symbol-input">
@@ -58,6 +62,7 @@ export const LoginPage = () => {
                   onChange={onLoginInputChange}
                   className="input"
                   placeholder="Contraseña"
+                  required
                 />
                 <span className="focus-input"></span>
                 <span className="symbol-input">

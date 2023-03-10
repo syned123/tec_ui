@@ -10,8 +10,14 @@ import { Contact } from "../pages/contact/contact";
 import { Dashboard } from "../pages/dashboard/dashboard";
 import { Equipment } from "../pages/equipmet/equipment";
 import { Product } from "../pages/product/product";
-import { TemplateFormBoleta } from "../pages/ticket/templateFormBoleta";
+import Price from "../pages/reports/price";
+
+import { Pdf } from "../pages/ticket/Pdf";
+
+import TemplateFormBoleta from "../pages/ticket/templateFormBoleta";
+
 import { Ticket } from "../pages/ticket/ticket";
+
 import { User } from "../pages/user/user";
 
 export const TecRoutes = () => {
@@ -52,6 +58,9 @@ export const TecRoutes = () => {
               <Route path="/equipment" element={<Equipment />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/create/ticket" element={<TemplateFormBoleta />} />
+              <Route path="/ticket/edit/:id" element={<TemplateFormBoleta />} />
+              <Route path="/ticket/pdf" element={<Pdf />} />
+              <Route path="/report/price" element={<Price />} />
               <Route path="/*" element={<Navigate to="/" />} />
             </Routes>
           </main>

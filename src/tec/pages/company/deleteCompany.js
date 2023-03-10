@@ -10,7 +10,7 @@ export const DeleteCompany = () => {
   };
   return (
     <>
-      <IconButton onClick={handleDelete}>
+      <IconButton onClick={handleDelete} style={{ color: "rgb(255 0 0)" }}>
         <DeleteIcon />
       </IconButton>
     </>

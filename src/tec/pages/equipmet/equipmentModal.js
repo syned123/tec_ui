@@ -33,7 +33,8 @@ export const EquipmentModal = () => {
   const onInputChanged = ({ target }) => {
     setFormValues({
       ...formValues,
-      [target.name]: target.value,
+      [target.name]:
+        target.value.charAt(0).toUpperCase() + target.value.slice(1),
     });
   };
   const onSubmit = async (event) => {
@@ -49,7 +50,7 @@ export const EquipmentModal = () => {
   }, [activeRows]);
   return (
     <>
-      <IconButton onClick={openTecModal}>
+      <IconButton onClick={openTecModal} style={{ color: "#00ff2a" }}>
         <EditIcon />
       </IconButton>
       <Modal
@@ -60,7 +61,7 @@ export const EquipmentModal = () => {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h4" component="h2">
-            Entidades Financieras
+            Equipos
           </Typography>
           <form onSubmit={onSubmit}>
             <div className="contForm">
@@ -122,7 +123,15 @@ export const EquipmentModal = () => {
               </div>
             </div>
             <div className="contButton">
-              <Button variant="contained" color="success" type="">
+              <Button
+                variant="contained"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#007c15",
+                  paddingBottom: "5px",
+                }}
+                type=""
+              >
                 Guardar
               </Button>
             </div>

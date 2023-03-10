@@ -12,6 +12,7 @@ import { useAgencyStore } from "../../../hooks/useAgencyStore";
 import { useUiStore } from "../../../hooks/useUiStore";
 import EditIcon from "@mui/icons-material/Edit";
 import { useCompanyStore } from "../../../hooks/useCompanyStore";
+import axios from "axios";
 const style = {
   position: "absolute",
   top: "50%",
@@ -27,6 +28,7 @@ export const AgencyModal = () => {
   const { rows } = useCompanyStore();
   const { activeRows, startSavingRow } = useAgencyStore();
   const { isTecModalOpen, openTecModal, closeTecModal } = useUiStore();
+  const [agency, setAgency] = useState(null);
   const [formValues, setFormValues] = useState({
     nameAgency: "",
     adress1: "",
@@ -34,6 +36,18 @@ export const AgencyModal = () => {
     city: "",
     company: "",
   });
+  const agencyData = () => {
+    axios({
+      url: "http://localhost:4000/api/company/getCompany",
+      method: "GET",
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    }).then((response) => {
+      // console.log(response);
+      setAgency(response.data.company);
+    });
+  };
   const onInputChanged = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -41,12 +55,7 @@ export const AgencyModal = () => {
         target.value.charAt(0).toUpperCase() + target.value.slice(1),
     });
   };
-  const onAutocompletChanged = (event, newValue) => {
-    setFormValues({
-      ...formValues,
-      company: newValue.id,
-    });
-  };
+
   const onSubmit = async (event) => {
     event.preventDefault();
     console.log(formValues);
@@ -54,6 +63,7 @@ export const AgencyModal = () => {
     closeTecModal();
   };
   useEffect(() => {
+    agencyData();
     if (activeRows !== null) {
       setFormValues({ ...activeRows });
     }
@@ -64,9 +74,10 @@ export const AgencyModal = () => {
   //   rowsMap[elem.id] = elem;
   //   console.log(rowsMap);
   // });
+  // console.log(agency);
   return (
     <>
-      <IconButton onClick={openTecModal}>
+      <IconButton onClick={openTecModal} style={{ color: "#00ff2a" }}>
         <EditIcon />
       </IconButton>
       <Modal
@@ -142,7 +153,7 @@ export const AgencyModal = () => {
                   disablePortal
                   id="combo-box-demo"
                   value={formValues.company}
-                  options={rows}
+                  options={agency}
                   getOptionLabel={(option) => {
                     if (typeof option === "string") {
                       return option;
@@ -160,13 +171,25 @@ export const AgencyModal = () => {
                   }}
                   fullWidth
                   renderInput={(params) => (
-                    <TextField {...params} label="Entidad Financiera" />
+                    <TextField
+                      {...params}
+                      label="Entidad Financiera"
+                      color="success"
+                    />
                   )}
                 />
               </div>
             </div>
             <div className="contButton">
-              <Button variant="contained" color="success" type="">
+              <Button
+                variant="contained"
+                sx={{
+                  color: "#fff",
+                  backgroundColor: "#007c15",
+                  paddingBottom: "5px",
+                }}
+                type=""
+              >
                 Guardar
               </Button>
             </div>

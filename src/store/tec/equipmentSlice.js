@@ -33,7 +33,7 @@ export const equipmentSlice = createSlice({
     },
     onLoadEquipment: (state, { payload = [] }) => {
       state.isLoadingEquipment = false;
-      console.log("payload", payload);
+      // console.log("payload", payload);
       payload.equipment.forEach((element) => {
         const exists = state.rowsEquipment.some(
           (dbEquipment) => dbEquipment.id === element.id

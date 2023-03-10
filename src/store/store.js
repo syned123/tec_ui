@@ -4,6 +4,7 @@ import { agencySlice } from "./tec/agencySlice";
 import { companySlice } from "./tec/companySlice";
 import { contactSlice } from "./tec/contactSlice";
 import { equipmentSlice } from "./tec/equipmentSlice";
+
 import { ticketSlice } from "./tec/ticketSlice";
 import { userSlice } from "./tec/usuarioSlice";
 
